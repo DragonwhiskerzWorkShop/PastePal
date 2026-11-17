@@ -1,0 +1,597 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PastePal - Text Transformer, Fancy Symbols & Aesthetic Text Generator</title>
+    <meta name="description" content="Free online text transformer tool. Convert text to uppercase, lowercase, title case, or URL slugs. Auto-strips formatting when pasting. Copy cute bullet points and create aesthetic decorative text borders.">
+    <meta name="keywords" content="text transformer, case converter, uppercase, lowercase, title case, slug generator, strip formatting, plain text, bullet points, aesthetic text, fancy symbols, decorative text, cute symbols, pastepal">
+    <meta property="og:title" content="PastePal - Text Transformer & Aesthetic Text Generator">
+    <meta property="og:description" content="Transform text, copy cute bullet points, and create aesthetic decorative text. Auto-strips formatting!">
+    <meta property="og:type" content="website">
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🪴</text></svg>">
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 20px;
+            background: linear-gradient(135deg, #e8f5e9 0%, #c8e6c9 50%, #dcedc8 100%);
+            min-height: 100vh;
+        }
+
+        h1 {
+            text-align: center;
+            color: #333;
+            margin-bottom: 5px;
+            font-size: 2.5em;
+        }
+
+        .tagline {
+            text-align: center;
+            color: #666;
+            font-size: 16px;
+            margin-bottom: 25px;
+        }
+
+        .feature-badge {
+            display: inline-block;
+            background: #2e7d32;
+            color: white;
+            padding: 3px 10px;
+            border-radius: 20px;
+            font-size: 12px;
+            margin-left: 5px;
+        }
+
+        .section {
+            background: white;
+            border-radius: 16px;
+            padding: 25px;
+            margin-bottom: 20px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+        }
+
+        .section-title {
+            font-size: 1.3em;
+            color: #333;
+            margin: 0 0 15px 0;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .hint {
+            color: #888;
+            font-size: 13px;
+            margin-bottom: 15px;
+        }
+
+        textarea {
+            width: 100%;
+            height: 150px;
+            padding: 15px;
+            font-size: 16px;
+            border: 2px solid #e0e0e0;
+            border-radius: 10px;
+            resize: vertical;
+            margin-bottom: 15px;
+            transition: border-color 0.2s;
+        }
+
+        textarea:focus {
+            outline: none;
+            border-color: #66bb6a;
+        }
+
+        .buttons {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+
+        button {
+            flex: 1;
+            min-width: 120px;
+            padding: 12px 16px;
+            font-size: 14px;
+            font-weight: 600;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: transform 0.1s, box-shadow 0.1s;
+        }
+
+        button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+        }
+
+        button:active {
+            transform: translateY(0);
+        }
+
+        .uppercase { background: #2e7d32; color: white; }
+        .lowercase { background: #43a047; color: white; }
+        .titlecase { background: #66bb6a; color: white; }
+        .slug { background: #81c784; color: #1b5e20; }
+        .strip { background: #a5d6a7; color: #1b5e20; }
+        .copy { background: #fff3e0; color: #5d4037; border: 2px solid #ffcc80; }
+        .clear { background: #efebe9; color: #5d4037; border: 2px solid #d7ccc8; }
+
+        button.active {
+            box-shadow: 0 0 0 3px rgba(0,0,0,0.25);
+            transform: translateY(-2px);
+        }
+
+        /* Bullet Points */
+        .symbols-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(50px, 1fr));
+            gap: 8px;
+            margin-bottom: 15px;
+        }
+
+        .symbol-btn {
+            min-width: unset;
+            flex: unset;
+            padding: 12px;
+            font-size: 18px;
+            background: #f8f9fa;
+            border: 2px solid #e9ecef;
+            border-radius: 8px;
+        }
+
+        .symbol-btn:hover {
+            background: #fff;
+            border-color: #66bb6a;
+        }
+
+        /* Decorative Text */
+        .deco-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 10px;
+            margin-top: 15px;
+        }
+
+        .deco-item {
+            background: #f8f9fa;
+            border: 2px solid #e9ecef;
+            border-radius: 10px;
+            padding: 15px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.2s;
+            font-size: 16px;
+        }
+
+        .deco-item:hover {
+            background: #fff;
+            border-color: #66bb6a;
+            transform: translateY(-2px);
+        }
+
+        .deco-preview {
+            font-size: 14px;
+            color: #666;
+            margin-top: 5px;
+        }
+
+        /* Custom Deco Creator */
+        .creator-row {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 10px;
+            flex-wrap: wrap;
+        }
+
+        .creator-row input {
+            flex: 1;
+            min-width: 100px;
+            padding: 10px;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            font-size: 14px;
+        }
+
+        .creator-row input:focus {
+            outline: none;
+            border-color: #66bb6a;
+        }
+
+        .output-box {
+            background: #f8f9fa;
+            border: 2px dashed #ddd;
+            border-radius: 10px;
+            padding: 20px;
+            text-align: center;
+            font-size: 18px;
+            margin-top: 10px;
+            cursor: pointer;
+            transition: all 0.2s;
+            word-break: break-all;
+        }
+
+        .output-box:hover {
+            border-color: #66bb6a;
+            background: #fff;
+        }
+
+        .status {
+            position: fixed;
+            bottom: 20px;
+            left: 50%;
+            transform: translateX(-50%) translateY(100px);
+            background: #333;
+            color: white;
+            padding: 12px 24px;
+            border-radius: 30px;
+            font-size: 14px;
+            transition: transform 0.3s ease;
+            z-index: 1000;
+        }
+
+        .status.show {
+            transform: translateX(-50%) translateY(0);
+        }
+
+        footer {
+            text-align: center;
+            padding: 20px;
+            color: #888;
+            font-size: 13px;
+        }
+
+        @media (max-width: 600px) {
+            button {
+                min-width: 100px;
+                padding: 10px 12px;
+                font-size: 12px;
+            }
+            .symbols-grid {
+                grid-template-columns: repeat(auto-fill, minmax(45px, 1fr));
+            }
+        }
+    </style>
+</head>
+<body>
+    <h1>🪴 PastePal</h1>
+    <p class="tagline">Transform your text instantly <span class="feature-badge">Auto-strips formatting!</span></p>
+
+    <!-- Text Transformer Section -->
+    <div class="section">
+        <h2 class="section-title">📝 Text Transformer</h2>
+        <p class="hint">Paste any text below - formatting (fonts, colors, styles) is automatically removed! Click a button to transform. Click it again to undo.</p>
+
+        <textarea id="textInput" placeholder="Paste or type your text here... formatting will be stripped automatically!"></textarea>
+
+        <div class="buttons" style="margin-bottom: 10px;">
+            <button class="uppercase" id="btn-upper" onclick="handleClick('upper')">UPPERCASE</button>
+            <button class="lowercase" id="btn-lower" onclick="handleClick('lower')">lowercase</button>
+            <button class="titlecase" id="btn-title" onclick="handleClick('title')">Title Case</button>
+            <button class="slug" id="btn-slug" onclick="handleClick('slug')">/slug-format</button>
+        </div>
+
+        <div class="buttons">
+            <button class="strip" id="btn-strip" onclick="handleClick('strip')">Strip Extra Spaces</button>
+            <button class="copy" onclick="copyText()">📋 Copy</button>
+            <button class="clear" onclick="clearText()">Clear</button>
+        </div>
+    </div>
+
+    <!-- Bullet Points Section -->
+    <div class="section">
+        <h2 class="section-title">• Bullet Points & Symbols</h2>
+        <p class="hint">Click any symbol to copy it to your clipboard</p>
+
+        <div class="symbols-grid">
+            <button class="symbol-btn" onclick="copySymbol('•')">•</button>
+            <button class="symbol-btn" onclick="copySymbol('◦')">◦</button>
+            <button class="symbol-btn" onclick="copySymbol('▪')">▪</button>
+            <button class="symbol-btn" onclick="copySymbol('▫')">▫</button>
+            <button class="symbol-btn" onclick="copySymbol('▸')">▸</button>
+            <button class="symbol-btn" onclick="copySymbol('▹')">▹</button>
+            <button class="symbol-btn" onclick="copySymbol('►')">►</button>
+            <button class="symbol-btn" onclick="copySymbol('→')">→</button>
+            <button class="symbol-btn" onclick="copySymbol('➤')">➤</button>
+            <button class="symbol-btn" onclick="copySymbol('➜')">➜</button>
+            <button class="symbol-btn" onclick="copySymbol('✦')">✦</button>
+            <button class="symbol-btn" onclick="copySymbol('✧')">✧</button>
+            <button class="symbol-btn" onclick="copySymbol('★')">★</button>
+            <button class="symbol-btn" onclick="copySymbol('☆')">☆</button>
+            <button class="symbol-btn" onclick="copySymbol('✿')">✿</button>
+            <button class="symbol-btn" onclick="copySymbol('❀')">❀</button>
+            <button class="symbol-btn" onclick="copySymbol('♡')">♡</button>
+            <button class="symbol-btn" onclick="copySymbol('♥')">♥</button>
+            <button class="symbol-btn" onclick="copySymbol('✓')">✓</button>
+            <button class="symbol-btn" onclick="copySymbol('✔')">✔</button>
+            <button class="symbol-btn" onclick="copySymbol('✗')">✗</button>
+            <button class="symbol-btn" onclick="copySymbol('✘')">✘</button>
+            <button class="symbol-btn" onclick="copySymbol('◈')">◈</button>
+            <button class="symbol-btn" onclick="copySymbol('◇')">◇</button>
+            <button class="symbol-btn" onclick="copySymbol('○')">○</button>
+            <button class="symbol-btn" onclick="copySymbol('●')">●</button>
+            <button class="symbol-btn" onclick="copySymbol('◐')">◐</button>
+            <button class="symbol-btn" onclick="copySymbol('◑')">◑</button>
+            <button class="symbol-btn" onclick="copySymbol('⟡')">⟡</button>
+            <button class="symbol-btn" onclick="copySymbol('⋆')">⋆</button>
+            <button class="symbol-btn" onclick="copySymbol('✵')">✵</button>
+            <button class="symbol-btn" onclick="copySymbol('❖')">❖</button>
+        </div>
+    </div>
+
+    <!-- Aesthetic Text Decorations Section -->
+    <div class="section">
+        <h2 class="section-title">⋆ Aesthetic Text Decorations</h2>
+        <p class="hint">Type your text and click a style to copy the decorated version</p>
+
+        <input type="text" id="decoInput" placeholder="Type your text here..." style="width: 100%; padding: 15px; font-size: 16px; border: 2px solid #e0e0e0; border-radius: 10px; margin-bottom: 15px;">
+
+        <div class="deco-grid">
+            <div class="deco-item" onclick="copyDeco('sparkle')">
+                <span class="deco-output">·˚ ✧ text ✧ ˚·</span>
+                <div class="deco-preview">Sparkle</div>
+            </div>
+            <div class="deco-item" onclick="copyDeco('stars')">
+                <span class="deco-output">⋆⁺₊⋆ text ⋆⁺₊⋆</span>
+                <div class="deco-preview">Stars</div>
+            </div>
+            <div class="deco-item" onclick="copyDeco('flower')">
+                <span class="deco-output">✿ text ✿</span>
+                <div class="deco-preview">Flower</div>
+            </div>
+            <div class="deco-item" onclick="copyDeco('hearts')">
+                <span class="deco-output">♡ text ♡</span>
+                <div class="deco-preview">Hearts</div>
+            </div>
+            <div class="deco-item" onclick="copyDeco('aesthetic1')">
+                <span class="deco-output">⋆‧°𓏲ּ text 𓏲ּ°‧⋆</span>
+                <div class="deco-preview">Aesthetic</div>
+            </div>
+            <div class="deco-item" onclick="copyDeco('cloud')">
+                <span class="deco-output">☁️ text ☁️</span>
+                <div class="deco-preview">Cloud</div>
+            </div>
+            <div class="deco-item" onclick="copyDeco('moon')">
+                <span class="deco-output">☾ text ☽</span>
+                <div class="deco-preview">Moon</div>
+            </div>
+            <div class="deco-item" onclick="copyDeco('butterfly')">
+                <span class="deco-output">𓆩 text 𓆪</span>
+                <div class="deco-preview">Wings</div>
+            </div>
+            <div class="deco-item" onclick="copyDeco('lines')">
+                <span class="deco-output">─── text ───</span>
+                <div class="deco-preview">Lines</div>
+            </div>
+            <div class="deco-item" onclick="copyDeco('arrows')">
+                <span class="deco-output">»»— text —««</span>
+                <div class="deco-preview">Arrows</div>
+            </div>
+            <div class="deco-item" onclick="copyDeco('fancy')">
+                <span class="deco-output">•·.·''·.·• text •·.·''·.·•</span>
+                <div class="deco-preview">Fancy Dots</div>
+            </div>
+            <div class="deco-item" onclick="copyDeco('music')">
+                <span class="deco-output">♪♫ text ♫♪</span>
+                <div class="deco-preview">Music</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Custom Decoration Creator -->
+    <div class="section">
+        <h2 class="section-title">🎨 Create Your Own</h2>
+        <p class="hint">Design your own text decoration by choosing symbols for left, right, and separators</p>
+
+        <div class="creator-row">
+            <input type="text" id="customLeft" placeholder="Left symbols (e.g. ⋆‧°)">
+            <input type="text" id="customText" placeholder="Your text">
+            <input type="text" id="customRight" placeholder="Right symbols (e.g. °‧⋆)">
+        </div>
+
+        <div class="output-box" id="customOutput" onclick="copyCustom()">
+            Your decorated text will appear here...
+        </div>
+
+        <p class="hint" style="margin-top: 10px; text-align: center;">Click the box above to copy your creation!</p>
+    </div>
+
+    <footer>
+        Made with 🌿 | PastePal - Free Text Transformer Tool
+    </footer>
+
+    <div id="status" class="status"></div>
+
+    <script>
+        const textInput = document.getElementById('textInput');
+        const decoInput = document.getElementById('decoInput');
+        const status = document.getElementById('status');
+
+        let lastAction = null;
+        let previousText = null;
+
+        // Handle paste - strip formatting automatically
+        textInput.addEventListener('paste', function(e) {
+            e.preventDefault();
+            const text = (e.clipboardData || window.clipboardData).getData('text/plain');
+            document.execCommand('insertText', false, text);
+            showStatus('Pasted as plain text ✨');
+            lastAction = null;
+            previousText = null;
+            clearActiveButton();
+        });
+
+        textInput.addEventListener('input', function() {
+            lastAction = null;
+            previousText = null;
+            clearActiveButton();
+        });
+
+        // Update decoration previews
+        decoInput.addEventListener('input', updateDecoPreview);
+
+        function updateDecoPreview() {
+            const text = decoInput.value || 'text';
+            const decorations = {
+                'sparkle': `·˚ ✧ ${text} ✧ ˚·`,
+                'stars': `⋆⁺₊⋆ ${text} ⋆⁺₊⋆`,
+                'flower': `✿ ${text} ✿`,
+                'hearts': `♡ ${text} ♡`,
+                'aesthetic1': `⋆‧°𓏲ּ ${text} 𓏲ּ°‧⋆`,
+                'cloud': `☁️ ${text} ☁️`,
+                'moon': `☾ ${text} ☽`,
+                'butterfly': `𓆩 ${text} 𓆪`,
+                'lines': `─── ${text} ───`,
+                'arrows': `»»— ${text} —««`,
+                'fancy': `•·.·''·.·• ${text} •·.·''·.·•`,
+                'music': `♪♫ ${text} ♫♪`
+            };
+
+            document.querySelectorAll('.deco-item').forEach(item => {
+                const style = item.getAttribute('onclick').match(/'(\w+)'/)[1];
+                if (decorations[style]) {
+                    item.querySelector('.deco-output').textContent = decorations[style];
+                }
+            });
+        }
+
+        // Custom creator live update
+        document.getElementById('customLeft').addEventListener('input', updateCustomPreview);
+        document.getElementById('customText').addEventListener('input', updateCustomPreview);
+        document.getElementById('customRight').addEventListener('input', updateCustomPreview);
+
+        function updateCustomPreview() {
+            const left = document.getElementById('customLeft').value || '';
+            const text = document.getElementById('customText').value || 'your text';
+            const right = document.getElementById('customRight').value || '';
+            const result = `${left} ${text} ${right}`.trim();
+            document.getElementById('customOutput').textContent = result;
+        }
+
+        function clearActiveButton() {
+            document.querySelectorAll('.buttons button').forEach(btn => {
+                btn.classList.remove('active');
+            });
+        }
+
+        function setActiveButton(type) {
+            clearActiveButton();
+            const btn = document.getElementById('btn-' + type);
+            if (btn) btn.classList.add('active');
+        }
+
+        function handleClick(type) {
+            if (lastAction === type && previousText !== null) {
+                textInput.value = previousText;
+                showStatus('Undone! ↩️');
+                lastAction = null;
+                previousText = null;
+                clearActiveButton();
+                return;
+            }
+
+            previousText = textInput.value;
+            lastAction = type;
+            const text = textInput.value;
+
+            switch(type) {
+                case 'upper':
+                    textInput.value = text.toUpperCase();
+                    showStatus('UPPERCASE ✓');
+                    break;
+                case 'lower':
+                    textInput.value = text.toLowerCase();
+                    showStatus('lowercase ✓');
+                    break;
+                case 'title':
+                    textInput.value = text.toLowerCase().replace(/\b\w/g, c => c.toUpperCase());
+                    showStatus('Title Case ✓');
+                    break;
+                case 'slug':
+                    textInput.value = text
+                        .toLowerCase()
+                        .trim()
+                        .replace(/[^\w\s-]/g, '')
+                        .replace(/\s+/g, '-')
+                        .replace(/-+/g, '-');
+                    showStatus('/slug-format ✓');
+                    break;
+                case 'strip':
+                    textInput.value = text
+                        .replace(/[\r\n]+/g, '\n')
+                        .replace(/[^\S\n]+/g, ' ')
+                        .trim();
+                    showStatus('Extra spaces stripped ✓');
+                    break;
+            }
+
+            setActiveButton(type);
+        }
+
+        function copyText() {
+            if (!textInput.value) return;
+            textInput.select();
+            navigator.clipboard.writeText(textInput.value);
+            showStatus('Copied! 📋');
+        }
+
+        function clearText() {
+            textInput.value = '';
+            lastAction = null;
+            previousText = null;
+            clearActiveButton();
+            showStatus('Cleared ✓');
+        }
+
+        function copySymbol(symbol) {
+            navigator.clipboard.writeText(symbol);
+            showStatus(`Copied: ${symbol}`);
+        }
+
+        function copyDeco(style) {
+            const text = decoInput.value || 'text';
+            const decorations = {
+                'sparkle': `·˚ ✧ ${text} ✧ ˚·`,
+                'stars': `⋆⁺₊⋆ ${text} ⋆⁺₊⋆`,
+                'flower': `✿ ${text} ✿`,
+                'hearts': `♡ ${text} ♡`,
+                'aesthetic1': `⋆‧°𓏲ּ ${text} 𓏲ּ°‧⋆`,
+                'cloud': `☁️ ${text} ☁️`,
+                'moon': `☾ ${text} ☽`,
+                'butterfly': `𓆩 ${text} 𓆪`,
+                'lines': `─── ${text} ───`,
+                'arrows': `»»— ${text} —««`,
+                'fancy': `•·.·''·.·• ${text} •·.·''·.·•`,
+                'music': `♪♫ ${text} ♫♪`
+            };
+
+            navigator.clipboard.writeText(decorations[style]);
+            showStatus('Copied! ✨');
+        }
+
+        function copyCustom() {
+            const output = document.getElementById('customOutput').textContent;
+            if (output && output !== 'Your decorated text will appear here...') {
+                navigator.clipboard.writeText(output);
+                showStatus('Copied your creation! ✨');
+            }
+        }
+
+        function showStatus(message) {
+            status.textContent = message;
+            status.classList.add('show');
+            setTimeout(() => status.classList.remove('show'), 2000);
+        }
+
+        // Initialize
+        updateDecoPreview();
+        updateCustomPreview();
+    </script>
+</body>
+</html>
